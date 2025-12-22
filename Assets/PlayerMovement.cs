@@ -53,7 +53,8 @@ public class PlayerMovement : MonoBehaviour
     //signature used to read 3d
     public void OnMove(InputAction.CallbackContext context)
     {
-        movingInput = context.ReadValue<Vector2>();
+        Vector2 rawInput = context.ReadValue<Vector2>();
+        movingInput = new Vector2(rawInput.x, 0);
     }
 
     public void OnJump(InputAction.CallbackContext context)
