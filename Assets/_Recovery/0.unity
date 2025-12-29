@@ -308,8 +308,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerMovement
   speed: 5
-  timeTillJump: 0.35
-  initalVelocity: 0
+  jump: 10
   groundMask:
     serializedVersion: 2
     m_Bits: 0

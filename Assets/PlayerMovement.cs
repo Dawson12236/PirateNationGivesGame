@@ -11,7 +11,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector2 movingInput;
 
     public float speed = 5f;
-    public float jump = 10f;
+    private float jump = 10f;
 
     public LayerMask groundMask;
     bool isGrounded;
@@ -22,7 +22,6 @@ public class PlayerMovement : MonoBehaviour
     {
         controls = new InputSystem_Actions();
         controls.Player.Enable(); // makes sure is enabled 
-
     }
 
     void Start()
@@ -45,7 +44,7 @@ public class PlayerMovement : MonoBehaviour
         // moving cahracter based on where they currently are, interpolates to look smoother
         if (movingInput != Vector2.zero)
         {
-            rb.MovePosition(rb.position + speed * Time.fixedDeltaTime * movingInput);
+            rb.linearVelocity = new Vector2(movingInput.x * speed, rb.linearVelocity.y);
         }
 
     }
@@ -53,8 +52,7 @@ public class PlayerMovement : MonoBehaviour
     //signature used to read 3d
     public void OnMove(InputAction.CallbackContext context)
     {
-        Vector2 rawInput = context.ReadValue<Vector2>();
-        movingInput = new Vector2(rawInput.x, 0);
+        movingInput = context.ReadValue<Vector2>();
     }
 
     public void OnJump(InputAction.CallbackContext context)
