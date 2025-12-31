@@ -1378,6 +1378,8 @@ MonoBehaviour:
   crouchingSize: {x: 1, y: 0.5}
   crouchHeight: 0.5
   standingHeight: 1
+  standingOffset: {x: 0, y: 0}
+  crouchingOffset: {x: 0, y: 0.5}
   speed: 5
 --- !u!114 &1692810021
 MonoBehaviour:

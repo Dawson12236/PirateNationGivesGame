@@ -20,6 +20,8 @@ public class PlayerMovement : MonoBehaviour
     public Vector2 crouchingSize;
     public float crouchHeight, standingHeight;
     private bool wantsCrouch;
+    public Vector2 standingOffset;
+    public Vector2 crouchingOffset;
 
     public float speed = 5f;
     private float jump = 10f;
@@ -55,7 +57,7 @@ public class PlayerMovement : MonoBehaviour
             rb.linearVelocity = new Vector2(movingInput.x * speed, rb.linearVelocity.y);
         }
 
-        if(wantsCrouch && isGrounded)
+        if(wantsCrouch )
         {
             Crouch();
         }
@@ -73,7 +75,7 @@ public class PlayerMovement : MonoBehaviour
 
     public void OnCrouch(InputAction.CallbackContext context)
     {
-        if (context.performed && isGrounded)
+        if (context.performed)
         {
             wantsCrouch = true;
         }
@@ -86,9 +88,10 @@ public class PlayerMovement : MonoBehaviour
     public void Crouch()
     {
         playerCollider.size = new Vector2(playerCollider.size.x, crouchHeight);
-        playerCollider.offset = new Vector2(0, -0.5f);
+        playerCollider.offset = crouchingOffset;
         speed = 4f;
     }
+
     public void StandAttempt()
     {
         bool notblocked = !Physics2D.OverlapCircle(headCheck.position, headCheckRadius, groundLayer);
@@ -96,12 +99,10 @@ public class PlayerMovement : MonoBehaviour
         {
             Debug.Log("uncrouched");
             playerCollider.size = new Vector2(playerCollider.size.x, standingHeight);
-            playerCollider.offset = new Vector2(0, 0);
+            playerCollider.offset = standingOffset;
             speed = 5f;
         }
     }
-
-   
 
     public void OnJump(InputAction.CallbackContext context)
     {
