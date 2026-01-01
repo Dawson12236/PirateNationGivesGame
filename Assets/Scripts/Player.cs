@@ -13,13 +13,21 @@ public class Player: MonoBehaviour
         coinText = GameObject.FindWithTag("CoinText").GetComponent<TextMeshProUGUI>();
         coinText.text = player_treasure.ToString();
     }
-    private void OnTriggerEnter2D(Collider2D collision) 
+    public void scatterCoins() // Function meant to be added later.
     {
-        if(collision.gameObject.tag == "Lose Treasure") // The damage system, incredibly basic but it will be added to later
+        
+    }
+    private void OnCollisionEnter2D(Collision2D collision) 
+    {
+        if(collision.gameObject.CompareTag("Lose Treasure")) // The damage system, incredibly basic but it will be added to later (nah it'll be replaced with something better lol)
         {
             player_treasure = Math.Floor(player_treasure * 0.75);
             coinText.text = player_treasure.ToString();
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
         if(collision.gameObject.tag == "Gain Treasure") // The coin collection system, this is basic as well but it does well
         {
             TreasureItem treasure = collision.gameObject.GetComponent<TreasureItem>();
