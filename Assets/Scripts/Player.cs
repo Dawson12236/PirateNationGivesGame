@@ -7,6 +7,13 @@ public class Player: MonoBehaviour
 {
     public double player_treasure; // The only player value for now, there will be more.
     private TextMeshProUGUI coinText; // This variable allows for the total amount of treasure to be displayed in game.
+    private AudioSource peeDeeAudio;
+    public AudioClip damageTaken;
+
+    void Awake()
+    {
+        peeDeeAudio = GetComponent<AudioSource>();
+    }
 
     void Start()
     {
@@ -17,6 +24,7 @@ public class Player: MonoBehaviour
     {
         if(collision.gameObject.tag == "Lose Treasure") // The damage system, incredibly basic but it will be added to later
         {
+            peeDeeAudio.PlayOneShot(damageTaken);
             player_treasure = Math.Floor(player_treasure * 0.75);
             coinText.text = player_treasure.ToString();
         }
