@@ -4,7 +4,9 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - Ground
+  - Lose Treasure
+  - CoinText
+  - Gain Treasure
   layers:
   - Default
   - TransparentFX
