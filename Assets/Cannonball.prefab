@@ -104,3 +104,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   fireSpeed: 1
+  spinSpeed: 100
