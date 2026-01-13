@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -8,34 +9,36 @@ using UnityEngine.InputSystem;
 public class PlayerMovement : MonoBehaviour
 {
 
-    enum Movement_State {Idle, Walk, Jump, Fall, Crouch};
+    enum Movement_State { Idle, Walk, Jump, Fall, Crouch};
     Movement_State current_state;
     Movement_State previous_state;
 
     public InputActionAsset InputActions;
-
     private InputAction jump_action;
     private InputAction move_action;
     private InputAction crouch_action;
 
     private Rigidbody2D rb;
-    private Vector2 movingInput;
+    public Transform headCheck;
+    public CapsuleCollider2D playerCollider;
     public LayerMask groundLayer;
 
 
-    public Transform headCheck;
-    public float headCheckRadius = 0.2f;
-
-    public CapsuleCollider2D playerCollider;
     public Vector2 standingSize;
     public Vector2 crouchingSize;
     public float crouchHeight, standingHeight;
+    public float headCheckRadius = 0.2f;
 
     public float walk_speed = 5f;
+    public float w_acceleration = 50f;
     public float crouch_speed = 2f;
-    private float jump = 10f;
+    public float c_acceleration = 35f;
+    public float jump_strength = 125f;
+    private float friction_coefficient = 1f;
+
+    private Vector2 movingInput;
+
     bool isGrounded;
-    private float blocks = 0f;
     private void Awake()
     {
         move_action = InputSystem.actions.FindAction("Move");
@@ -43,19 +46,19 @@ public class PlayerMovement : MonoBehaviour
         crouch_action = InputSystem.actions.FindAction("crouch");
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
-
     }
 
     void Update()
     {
-        movingInput = move_action.ReadValue<Vector2>();
-        switch (current_state)
+        movingInput = move_action.ReadValue<Vector2>(); // Assigns movingInput to the move_action's vector its retriving from directional inputs (Joysticks, WASD, or Arrow Keys)
+
+        switch (current_state) // This switch statement switches to the corresponding update function depending on the current state
         {
             case Movement_State.Idle:
                 UpdateIdleState();
                 break;
             case Movement_State.Walk:
-                UpdateWalkState(); 
+                UpdateWalkState();
                 break;
             case Movement_State.Jump:
                 UpdateJumpState();
@@ -73,7 +76,7 @@ public class PlayerMovement : MonoBehaviour
     {
         ExitState();
         current_state = new_state;
-        switch (current_state)
+        switch (current_state) // This switch statement executes the corresponding lines once entering a state
         {
             case Movement_State.Idle:
                 print("Entered Idle State");
@@ -83,7 +86,7 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case Movement_State.Jump:
                 print("Entered Jump State");
-                rb.AddForce(Vector2.up * jump, ForceMode2D.Impulse);
+                rb.AddForce(Vector2.up * jump_strength, ForceMode2D.Impulse);
                 break;
             case Movement_State.Fall:
                 print("Entered Fall State");
@@ -99,7 +102,7 @@ public class PlayerMovement : MonoBehaviour
     void ExitState()
     {
         previous_state = current_state;
-        switch (current_state)
+        switch (current_state) // This switch statement executes the corresponding lines once exiting a state
         {
             case Movement_State.Idle:
                 print("Exited Idle State");
@@ -123,6 +126,9 @@ public class PlayerMovement : MonoBehaviour
     void UpdateIdleState()
     {
         print("Idling");
+
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, caluculate_fricition() * Time.deltaTime);
+
         if (!isGrounded && rb.linearVelocity.y < 0)
         {
             EnterState(Movement_State.Fall);
@@ -152,8 +158,8 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateWalkState()
     {
-        rb.linearVelocity = new Vector2(movingInput.x * walk_speed, rb.linearVelocity.y);
         print("Walking");
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
         if (!isGrounded && rb.linearVelocity.y < 0)
         {
             EnterState(Movement_State.Fall);
@@ -184,7 +190,7 @@ public class PlayerMovement : MonoBehaviour
     void UpdateCrouchState()
     {
         print("Crouching");
-        rb.linearVelocity = new Vector2(movingInput.x * crouch_speed, rb.linearVelocity.y);
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * crouch_speed, c_acceleration * Time.deltaTime);
         if (!crouch_action.IsPressed())
         {
             StandAttempt();
@@ -192,7 +198,7 @@ public class PlayerMovement : MonoBehaviour
 
     }
 
-    public void StandAttempt()
+    void StandAttempt()
     {
         bool notblocked = !Physics2D.OverlapCircle(headCheck.position, headCheckRadius, groundLayer);
         if (notblocked)
@@ -202,26 +208,29 @@ public class PlayerMovement : MonoBehaviour
             EnterState(Movement_State.Idle);
         }
     }
-
-    private void OnCollisionEnter2D(Collision2D other)
+    float caluculate_fricition()
     {
-        if (other.gameObject.CompareTag("Ground")) 
-        {
-            Debug.Log("Touching ground");
-            isGrounded = true;
-            blocks++;
-        }
+        var normal_force = rb.mass * (Physics2D.gravity.y);
+        var fricition_force = normal_force * friction_coefficient * -1;
+        return fricition_force;
     }
 
+    private void OnCollisionStay2D(Collision2D other)
+    {
+        Vector3 normal = other.GetContact(0).normal;
+        print(normal);
+        if (normal.y > 0.8f ) // can't go up angles no more than 36 degrees
+        {
+            isGrounded = true;
+        }
+
+    }
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
         {
-            blocks--;
-            if(blocks == 0)
-            {
-                isGrounded = false;
-            }
+            isGrounded = false;
         }
+
     }
 }
