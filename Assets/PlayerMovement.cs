@@ -141,7 +141,21 @@ public class PlayerMovement : MonoBehaviour
             EnterState(Movement_State.Fall);
         }
         if (movingInput != Vector2.zero)
+        print("Idling");
+
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, caluculate_fricition() * Time.deltaTime);
+
+        if (!isGrounded && rb.linearVelocity.y < 0)
         {
+            EnterState(Movement_State.Fall);
+        }
+        if (movingInput != Vector2.zero)
+        {
+            EnterState(Movement_State.Walk);
+        }
+        if (jump_action.WasPressedThisFrame())
+        {
+            EnterState(Movement_State.Jump);
             EnterState(Movement_State.Walk);
         }
         if (jump_action.WasPressedThisFrame())
@@ -149,7 +163,9 @@ public class PlayerMovement : MonoBehaviour
             EnterState(Movement_State.Jump);
         }
         if (crouch_action.WasPressedThisFrame())
+        if (crouch_action.WasPressedThisFrame())
         {
+            EnterState(Movement_State.Crouch);
             EnterState(Movement_State.Crouch);
         }
     }
@@ -158,6 +174,7 @@ public class PlayerMovement : MonoBehaviour
         print("Falling");
         if (isGrounded)
         {
+            EnterState(Movement_State.Idle);
             EnterState(Movement_State.Idle);
         }
     }
@@ -187,6 +204,7 @@ public class PlayerMovement : MonoBehaviour
         print("Jumping");
         if (rb.linearVelocity.y < 0)
         {
+            EnterState(Movement_State.Fall);
             EnterState(Movement_State.Fall);
         }
     }
@@ -287,8 +305,8 @@ public class PlayerMovement : MonoBehaviour
             isGrounded = true;
             DamageRecovery();
         }
-    }
 
+    }
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Ground"))
