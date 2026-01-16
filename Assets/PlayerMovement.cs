@@ -8,7 +8,7 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    enum Movement_State { Idle, Walk, Jump, Fall, Crouch};
+    enum Movement_State { Idle, Walk, Jump, Fall, Crouch, Damage};
     Movement_State current_state;
     Movement_State previous_state;
     public InputActionAsset InputActions;
@@ -59,7 +59,7 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         movingInput = move_action.ReadValue<Vector2>(); // Assigns movingInput to the move_action's vector its retriving from directional inputs (Joysticks, WASD, or Arrow Keys)
-        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
+
         switch (current_state) // This switch statement switches to the corresponding update function depending on the current state
         {
             case Movement_State.Idle:
@@ -76,6 +76,9 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case Movement_State.Crouch:
                 UpdateCrouchState();
+                break;
+            case Movement_State.Damage:
+                UpdateDamageState();
                 break;
         }
     }
@@ -104,6 +107,11 @@ public class PlayerMovement : MonoBehaviour
                 playerCollider.size = new Vector2(playerCollider.size.x, crouchHeight);
                 playerCollider.offset = new Vector2(0, -0.5f);
                 break;
+            case Movement_State.Damage:
+                print("Entered Damage State");
+                playerCollider.size = new Vector2(playerCollider.size.x, crouchHeight);
+                playerCollider.offset = new Vector2(0, -0.5f);
+                break;
         }
     }
 
@@ -127,6 +135,9 @@ public class PlayerMovement : MonoBehaviour
             case Movement_State.Crouch:
                 print("Exited Crouch State");
                 break;
+            case Movement_State.Damage:
+                print("Exited Crouch State");
+                break;
         }
     }
 
@@ -135,16 +146,10 @@ public class PlayerMovement : MonoBehaviour
         print("Idling");
 
         rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, caluculate_fricition() * Time.deltaTime);
-
-        if (!isGrounded && rb.linearVelocity.y < 0)
+        if (tookDamage)
         {
-            EnterState(Movement_State.Fall);
+            EnterState(Movement_State.Damage);
         }
-        if (movingInput != Vector2.zero)
-        print("Idling");
-
-        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, caluculate_fricition() * Time.deltaTime);
-
         if (!isGrounded && rb.linearVelocity.y < 0)
         {
             EnterState(Movement_State.Fall);
@@ -156,32 +161,33 @@ public class PlayerMovement : MonoBehaviour
         if (jump_action.WasPressedThisFrame())
         {
             EnterState(Movement_State.Jump);
-            EnterState(Movement_State.Walk);
-        }
-        if (jump_action.WasPressedThisFrame())
-        {
-            EnterState(Movement_State.Jump);
         }
         if (crouch_action.WasPressedThisFrame())
-        if (crouch_action.WasPressedThisFrame())
         {
-            EnterState(Movement_State.Crouch);
             EnterState(Movement_State.Crouch);
         }
     }
     void UpdateFallState()
     {
         print("Falling");
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
         if (isGrounded)
         {
             EnterState(Movement_State.Idle);
-            EnterState(Movement_State.Idle);
+        }
+        if (tookDamage)
+        {
+            EnterState(Movement_State.Damage);
         }
     }
     void UpdateWalkState()
     {
         print("Walking");
         rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
+        if (tookDamage)
+        {
+            EnterState(Movement_State.Damage);
+        }
         if (!isGrounded && rb.linearVelocity.y < 0)
         {
             EnterState(Movement_State.Fall);
@@ -202,9 +208,13 @@ public class PlayerMovement : MonoBehaviour
     void UpdateJumpState()
     {
         print("Jumping");
+        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
+        if (tookDamage)
+        {
+            EnterState(Movement_State.Damage);
+        }
         if (rb.linearVelocity.y < 0)
         {
-            EnterState(Movement_State.Fall);
             EnterState(Movement_State.Fall);
         }
     }
@@ -212,11 +222,23 @@ public class PlayerMovement : MonoBehaviour
     {
         print("Crouching");
         rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * crouch_speed, c_acceleration * Time.deltaTime);
+        if (tookDamage)
+        {
+            EnterState(Movement_State.Damage);
+        }
         if (!crouch_action.IsPressed())
         {
             StandAttempt();
         }
 
+    }
+    void UpdateDamageState()
+    {
+        print("Taking Damage");
+        if (isGrounded)
+        {
+            EnterState(Movement_State.Idle);
+        }
     }
     public void StandAttempt()
     {
@@ -236,8 +258,6 @@ public class PlayerMovement : MonoBehaviour
         isGrounded = false;
         
         peeDeeAudio.PlayOneShot(damageTaken);
-        playerCollider.size = new Vector2(playerCollider.size.x, crouchHeight); // Did this mainly for when you take damage in a small space.
-        playerCollider.offset = crouchingOffset;
         rb.gravityScale = recoilGravity; // Might need adjustment.
         if (headCheck.position.x >= other.transform.position.x) 
         {
@@ -260,7 +280,6 @@ public class PlayerMovement : MonoBehaviour
             
             rb.gravityScale = standardGravity;
             StandAttempt();
-            //manager.GetComponent<PlayerTreasure>().RemoveAndScatterCoins();
         }
     }
     float caluculate_fricition()
