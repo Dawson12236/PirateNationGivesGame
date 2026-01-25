@@ -7,15 +7,16 @@ TagManager:
   - Lose Treasure
   - CoinText
   - Gain Treasure
+  - Ground
   layers:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Ground
   - Water
   - UI
-  - 
-  - 
+  - Collectible
+  - Projectile
   - 
   - 
   - 
