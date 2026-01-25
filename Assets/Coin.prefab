@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 5996362357709195650}
   - component: {fileID: 951827977141701808}
   - component: {fileID: 6846659722107319683}
+  - component: {fileID: -4459981196190238733}
   m_Layer: 6
   m_Name: Coin
   m_TagString: Gain Treasure
@@ -83,7 +84,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: -2413806693520163455, guid: a86470a33a6bf42c4b3595704624658b, type: 3}
+  m_Sprite: {fileID: -3016093784141690031, guid: 46b8facc840c0864b95b4eef96bd9b17, type: 3}
   m_Color: {r: 0.91194963, g: 0.90389675, b: 0.0889006, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -269,3 +270,25 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
+--- !u!95 &-4459981196190238733
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4694131225319224650}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 3bed0e085a4d405459800b827373a063, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0

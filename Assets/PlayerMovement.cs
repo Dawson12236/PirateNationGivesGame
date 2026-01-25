@@ -18,8 +18,17 @@ public class PlayerMovement : MonoBehaviour
 
     public GameObject manager;
     
+    // Audio and Animation
     private AudioSource peeDeeAudio;
     public AudioClip damageTaken;
+    public Animator animator;
+    public SpriteRenderer spriteRenderer;
+    public Sprite idleSprite;
+    public RuntimeAnimatorController idleAnimation;
+    public RuntimeAnimatorController walkAnimation;
+    public RuntimeAnimatorController jumpAnimation;
+    public Sprite fallingSprite;
+
     private Rigidbody2D rb;
     public Transform headCheck;
     public CapsuleCollider2D playerCollider;
@@ -52,6 +61,8 @@ public class PlayerMovement : MonoBehaviour
         jump_action = InputSystem.actions.FindAction("Jump");
         crouch_action = InputSystem.actions.FindAction("crouch");
         peeDeeAudio = GetComponent<AudioSource>();
+        animator = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         rb.constraints = RigidbodyConstraints2D.FreezeRotation;
     }
@@ -91,16 +102,21 @@ public class PlayerMovement : MonoBehaviour
         {
             case Movement_State.Idle:
                 print("Entered Idle State");
+                animator.runtimeAnimatorController = idleAnimation;
                 break;
             case Movement_State.Walk:
                 print("Entered Walk State");
+                animator.runtimeAnimatorController = walkAnimation;
                 break;
             case Movement_State.Jump:
                 print("Entered Jump State");
+                animator.runtimeAnimatorController = jumpAnimation;
                 rb.AddForce(Vector2.up * jump_strength, ForceMode2D.Impulse);
                 break;
             case Movement_State.Fall:
                 print("Entered Fall State");
+                spriteRenderer.sprite = fallingSprite;
+                animator.enabled = false;
                 break;
             case Movement_State.Crouch:
                 print("Entered Crouch State");
@@ -131,6 +147,8 @@ public class PlayerMovement : MonoBehaviour
                 break;
             case Movement_State.Fall:
                 print("Exited Fall State");
+                spriteRenderer.sprite = idleSprite;
+                animator.enabled = true;
                 break;
             case Movement_State.Crouch:
                 print("Exited Crouch State");
