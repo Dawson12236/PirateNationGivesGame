@@ -27,7 +27,7 @@ public class PlayerTreasure: MonoBehaviour
     public void RemoveAndScatterCoins(bool directionRight) // Function meant to be added later.
     {
         double treasureLost = totalTreasure;
-        totalTreasure = Math.Floor(totalTreasure * 0.75);
+        totalTreasure = Math.Floor(totalTreasure * 0.5);
         treasureLost -= totalTreasure;
         for (int i = 0; i < treasureLost; i++)
         {
