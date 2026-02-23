@@ -35,7 +35,7 @@ public class PlayerMovement : MonoBehaviour
     public float w_acceleration = 50f;
     public float crouch_speed = 2f;
     public float c_acceleration = 35f;
-    public float jump_strength = 125f;
+    public float jump_strength = 5f;
     private float friction_coefficient = 1f;
     public float recoilHorizontalStrength = 7f;
     public float recoilVerticalStrength = 7f;
@@ -53,12 +53,14 @@ public class PlayerMovement : MonoBehaviour
         crouch_action = InputSystem.actions.FindAction("crouch");
         peeDeeAudio = GetComponent<AudioSource>();
         rb = GetComponent<Rigidbody2D>();
-        rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+        rb.constraints = RigidbodyConstraints2D.FreezeRotation | RigidbodyConstraints2D.FreezePositionX;
     }
 
     void Update()
     {
         movingInput = move_action.ReadValue<Vector2>(); // Assigns movingInput to the move_action's vector its retriving from directional inputs (Joysticks, WASD, or Arrow Keys)
+
+        //UpdateGroundCheck();
 
         switch (current_state) // This switch statement switches to the corresponding update function depending on the current state
         {
@@ -98,6 +100,7 @@ public class PlayerMovement : MonoBehaviour
             case Movement_State.Jump:
                 print("Entered Jump State");
                 rb.AddForce(Vector2.up * jump_strength, ForceMode2D.Impulse);
+                Debug.Log($"Jump Force Applied: {jump_strength}, Mass: {rb.mass}, Resulting Velocity: {rb.linearVelocity.y}");
                 break;
             case Movement_State.Fall:
                 print("Entered Fall State");
@@ -143,7 +146,7 @@ public class PlayerMovement : MonoBehaviour
 
     void UpdateIdleState()
     {
-        print("Idling");
+        //print("Idling");
 
         rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, 0, caluculate_fricition() * Time.deltaTime);
         if (tookDamage)
@@ -158,7 +161,7 @@ public class PlayerMovement : MonoBehaviour
         {
             EnterState(Movement_State.Walk);
         }
-        if (jump_action.WasPressedThisFrame())
+        if (jump_action.WasPressedThisFrame() && isGrounded )
         {
             EnterState(Movement_State.Jump);
         }
@@ -207,8 +210,7 @@ public class PlayerMovement : MonoBehaviour
     }
     void UpdateJumpState()
     {
-        print("Jumping");
-        rb.linearVelocityX = Mathf.MoveTowards(rb.linearVelocityX, movingInput.x * walk_speed, w_acceleration * Time.deltaTime);
+        //print("Jumping");
         if (tookDamage)
         {
             EnterState(Movement_State.Damage);
