@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8960364044e342342b0601cf644f8f61
+guid: 81bec1aeaa40d264084b2033e7b9781b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1438925471154121219
-    second: 16xCannonBall_0
+      213: 6116733605283057747
+    second: grass_brick_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 16xCannonBall_0
+      name: grass_brick_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 9
-        width: 142
-        height: 142
+        x: 0
+        y: 0
+        width: 32
+        height: 32
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: df5d89168e8e70ce0800000000000000
-      internalID: -1438925471154121219
+      spriteID: 35057906ec003e450800000000000000
+      internalID: 6116733605283057747
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      16xCannonBall_0: -1438925471154121219
+      grass_brick_0: 6116733605283057747
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

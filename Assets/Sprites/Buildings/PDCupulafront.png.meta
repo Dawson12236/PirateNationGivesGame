@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 8960364044e342342b0601cf644f8f61
+guid: 9051797cfdfab714d829df2bf7c60bc1
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -1438925471154121219
-    second: 16xCannonBall_0
+      213: -8351319365231408024
+    second: PDCupulafront_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -113,13 +113,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: 16xCannonBall_0
+      name: PDCupulafront_0
       rect:
         serializedVersion: 2
-        x: 9
-        y: 9
-        width: 142
-        height: 142
+        x: 35
+        y: 2
+        width: 50
+        height: 85
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -128,8 +128,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: df5d89168e8e70ce0800000000000000
-      internalID: -1438925471154121219
+      spriteID: 86c8a85d8472a1c80800000000000000
+      internalID: -8351319365231408024
       vertices: []
       indices: 
       edges: []
@@ -148,7 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      16xCannonBall_0: -1438925471154121219
+      PDCupulafront_0: -8351319365231408024
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
