@@ -9,9 +9,7 @@ public class PlayerTreasure: MonoBehaviour
     public double totalTreasure; // The only player value for now, there will be more.
     private TextMeshProUGUI coinText; // This variable allows for the total amount of treasure to be displayed in game.
     public GameObject player;
-    public GameObject gold;
-    public GameObject silver;
-    public GameObject bronze;
+    public GameObject coin;
     public AudioClip damageTaken;
 
     void Awake()
@@ -31,7 +29,7 @@ public class PlayerTreasure: MonoBehaviour
         treasureLost -= totalTreasure;
         for (int i = 0; i < treasureLost; i++)
         {
-            GameObject drop = Instantiate(bronze, player.transform.position, player.transform.rotation);
+            GameObject drop = Instantiate(coin, player.transform.position, player.transform.rotation);
             TreasureItem treasure = drop.GetComponent<TreasureItem>();
             treasure.Dropped(directionRight);
         }
