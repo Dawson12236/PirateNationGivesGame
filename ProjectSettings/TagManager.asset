@@ -48,5 +48,14 @@ TagManager:
   - name: Background
     uniqueID: 3651831615
     locked: 0
+  - name: Ground
+    uniqueID: 1309867275
+    locked: 0
+  - name: Building
+    uniqueID: 455021331
+    locked: 0
+  - name: Foreground
+    uniqueID: 964035607
+    locked: 0
   m_RenderingLayers:
   - Default
